@@ -30,8 +30,10 @@ Documentation will be located in the docs folder
 ## Usage
 
 Code is example of setup in a sketch. Values shown are the defualt values that the library will assume if not explictally set
+Example sketch to follow soon
 
 ```
+#include mt88xx //Set according to name and location of library
  mt88xx array;
 
 
@@ -41,5 +43,17 @@ void setup() {
   array.setErrorLED(13, false); // Error led pin, enable/disable
   array.setControlPins(4, 2, 5, 8, 12, 11); // Data, Strobe, AY start, AX Start, AX3, Reset | Both AY and AX consist of 3 sequential pins beginning at AY & AX start. AX3 is only used for MT8812/16. 
   array.begin();
+}
+
+void loop() {
+    
+    SwitchAddress addr = {7, 0, true}; // Initialize addr with initial values. SwitchAddress is the strucure that defines the varible addr. {X, Y, true/false} True = Make / False = Break
+
+    array.setSwitch(addr); // Commands switch array to make/break connection between  X and Y points.
+   
+    delay(1000); 
+    addr.makeBreak = false; // Change only the makeBreak property for reuse
+    array.setSwitch(addr);
+    delay(1000);
 }
 
