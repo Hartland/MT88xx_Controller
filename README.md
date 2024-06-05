@@ -1,15 +1,24 @@
 # MT88XX Controller Library 
 
+#### Beta stage of development
+
+
 #### This project is a library for Arduino control of MT88xx series of analog switch arrays. 
 
-#### This is still in the Alpha/Beta stage
+
+
+### Version 0.95 Changes
+MT8812 AX3 address bug has been fixed.
+	 
+Address pins are now individually assigned instead of
+assigning a start pin. See example test program.
 
 
 
 ## Hardware/Dependencies 
 
 There are no external software dependencies with the unmodified library. The library has been written to support as broad of a range of Arduino using base functions.
-For compatibility,The base library uses digitalWrite to set control and address pins.
+For compatibility,the base library uses digitalWrite to set control and address pins.
 It has been tested successfully with the digitalWriteFast library and can be easily converted.
 
 #### Tested to Date:
@@ -25,35 +34,21 @@ DUE
 
 ## Documents
 
-Documentation will be located in the docs folder
+Once project is closer to release, documentation will be located in the docs folder.
 
 ## Usage
 
-Code is example of setup in a sketch. Values shown are the defualt values that the library will assume if not explictally set
-Example sketch to follow soon
+See example test program.
 
-```
-#include mt88xx //Set according to name and location of library
- mt88xx array;
+Schematic for the test rig to be published soon.
 
+### Basic description of test rig 
+The test rig consists of 8 LEDS for the Y axis with the cathodes connected to ground. The anodes connect to Y axis pins.
 
-void setup() {
-   // Configure MT88XX control library
-  array.setModel(8); // Chip model. MT8808 = 8  MT8812 = 12  MT8816 = 16
-  array.setErrorLED(13, false); // Error led pin, enable/disable
-  array.setControlPins(4, 2, 5, 8, 12, 11); // Data, Strobe, AY start, AX Start, AX3, Reset | Both AY and AX consist of 3 sequential pins beginning at AY & AX start. AX3 is only used for MT8812/16. 
-  array.begin();
-}
+For the X axis 8, 12 , or 16 LEDS are used. Anodes are connected to VCC through a current limiting resistor (300 - 470 ohms).
 
-void loop() {
-    
-    SwitchAddress addr = {7, 0, true}; // Initialize addr with initial values. SwitchAddress is the strucure that defines the varible addr. {X, Y, true/false} True = Make / False = Break
+The anodes can be tied together as only one LED at a time will be active during normal operation. The cathodes are connected to x axis pins.
 
-    array.setSwitch(addr); // Commands switch array to make/break connection between  X and Y points.
-   
-    delay(1000); 
-    addr.makeBreak = false; // Change only the makeBreak property for reuse
-    array.setSwitch(addr);
-    delay(1000);
-}
+The array will connect an X and Y LED in series.
 
+The test program will scan down the X axis while scanning the entire Y axis in between each change of the X axis.

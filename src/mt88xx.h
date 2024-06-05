@@ -44,18 +44,19 @@ public:
     void setSwitch(const SwitchAddress& address);
     void setModel(uint8_t model);
     void setErrorLED(uint8_t pin, bool enabled);
-    void setControlPins(uint8_t dataPin, uint8_t strobePin, uint8_t ayStart, uint8_t axStart, uint8_t ax3Pin, uint8_t resetPin);
-
+    void setControlPins(uint8_t dataPin, uint8_t strobePin, const uint8_t axPins[3], const uint8_t ayPins[3], uint8_t ax3Pin, uint8_t resetPin);
+   
 private:
     uint8_t _model;
     bool _errorLedEnabled;
     uint8_t _errorLedPin;
     uint8_t _dataPin;
     uint8_t _strobePin;
-    uint8_t _ayStartPin;
-    uint8_t _axStartPin;
+    uint8_t _axPins[3];
+    uint8_t _ayPins[3];
     uint8_t _ax3Pin;
     uint8_t _resetPin;
+    
 };
 
 #endif

@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map For MT88xx_Controller
+#######################################
+
+#######################################
+# Datatypes/class (KEYWORD1)
+#######################################
+mt88xx		KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin		KEYWORD2
+setErrorLed	KEYWORD2
+setControlPins	KEYWORD2
+setModel	KEYWORD2
+setSwitch	KEYWORD2
+resetArray	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
