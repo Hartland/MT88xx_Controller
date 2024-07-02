@@ -29,6 +29,8 @@ There are no external software dependencies with the unmodified library. The lib
 
 * DUE
 
+* SEEED XIAO SAMD21
+
 
 
 ## Documents
