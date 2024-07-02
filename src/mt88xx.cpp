@@ -38,46 +38,53 @@ void mt88xx::resetArray() {
 
 // Make/break crosspoint in the array
 void mt88xx::setSwitch(const SwitchAddress& address){
-  bool bit;
-  int ax = address.ax; // address.ax is copied as it may need to be modified based on model. address.ay never needs to be modified.
-  
-// Check ax address is in range by chip type. ay address range is the same for all.
-if (((_model == 8 && ax < 8) || (_model == 12 && ax < 12) || (_model == 16 && ax < 16)) && address.ay < 8) { 
+   
+// Address validation
+  bool isValidModel8 = (_model == 8 && address.ax < 8);
+  bool isValidModel12 = (_model == 12 && address.ax < 12);
+  bool isValidModel16 = (_model == 16 && address.ax < 16);
+  bool isValidAY = (address.ay < 8);
+  bool isPositiveAX = (address.ax >= 0);
+  bool isPositiveAY = (address.ay >= 0);
 
-  //Sets make/break pin
-  digitalWrite ( _dataPin, address.makeBreak);
+  if ((isValidModel8 || isValidModel12 || isValidModel16) && isValidAY && isPositiveAX && isPositiveAY){
+    bool bit;
+    int ax = address.ax; // address.ax is copied as it may need to be modified based on model. address.ay never needs to be modified.
+    
+    //Sets make/break pin
+    digitalWrite ( _dataPin, address.makeBreak);
 
-  // MT8808 does not have the ax address logic hole and does not need to be adjusted
-  // Checks if MT8812 and adjusts for address logic hole by shifting ax address values greater then 5 up 2 positions and set AX3 pin high
-  if ( _model == 12 && (ax > 5) ) {
-      ax +=2;
-      digitalWrite(_ax3Pin,HIGH);
-      }
-
-  // Checks if MT8816 and adjusts for address logic hole by using addressMap8816 array to correct the ax address value. Sets AX3 pin state.  
-  if ( _model == 16 ) {
-      ax = addressMap8816[address.ax];
-      digitalWrite(_ax3Pin, ax > 7 ? HIGH : LOW);
-      }
-
-  // Set address pins (AY0-AY2 & AX0-AX2) and commit all with strobe.
-    // Set AY pins
-        for (int i = 0; i < 3; i++) {
-            bit = bitRead(address.ay, i);
-            digitalWrite(_ayPins[i], bit);
+    // MT8808 does not have the ax address logic hole and does not need to be adjusted
+    // Checks if MT8812 and adjusts for address logic hole by shifting ax address values greater then 5 up 2 positions and set AX3 pin high
+    if ( _model == 12 && (ax > 5) ) {
+        ax +=2;
+        digitalWrite(_ax3Pin,HIGH);
         }
 
-    // Set AX pins. Local copy of address.ax is used as it may have needed modification based on model.
-        for (int i = 0; i < 3; i++) {
-            bit = bitRead(ax, i);
-            digitalWrite(_axPins[i], bit);
+    // Checks if MT8816 and adjusts for address logic hole by using addressMap8816 array to correct the ax address value. Sets AX3 pin state.  
+    if ( _model == 16 ) {
+        ax = addressMap8816[address.ax];
+        digitalWrite(_ax3Pin, ax > 7 ? HIGH : LOW);
         }
 
-  // Strobe to commit address and make/break
-  digitalWrite( _strobePin, HIGH);
-  // Note that 20ns minimum strobe pulse time is required. A delay will need to be added here if very fast hardware is used.
-  digitalWrite( _strobePin, LOW);
-  }
+    // Set address pins (AY0-AY2 & AX0-AX2) and commit all with strobe.
+        // Set AY pins
+            for (int i = 0; i < 3; i++) {
+                bit = bitRead(address.ay, i);
+                digitalWrite(_ayPins[i], bit);
+            }
+
+        // Set AX pins. Local copy of address.ax is used as it may have needed modification based on model.
+            for (int i = 0; i < 3; i++) {
+                bit = bitRead(ax, i);
+                digitalWrite(_axPins[i], bit);
+            }
+
+    // Strobe to commit address and make/break
+    digitalWrite( _strobePin, HIGH);
+    // Note that 20ns minimum strobe pulse time is required. A delay will need to be added here if very fast hardware is used.
+    digitalWrite( _strobePin, LOW);
+    }
 
  // If error led indication is enabled, flash led if ax or ay address is out of range for model.
 else if (_errorLedEnabled) {
